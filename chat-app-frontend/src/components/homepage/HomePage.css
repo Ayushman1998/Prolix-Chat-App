@@ -1,0 +1,30 @@
+.mainParent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 100px;
+}
+
+.HomePage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70vw;
+}
+
+.chatAnimation {
+    max-width: 500px;
+}
+
+@media screen and (max-width: 960px) {
+    .HomePage {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .chatAnimation {
+        display: none;
+    }
+}
