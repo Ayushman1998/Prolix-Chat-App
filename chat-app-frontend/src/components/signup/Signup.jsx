@@ -11,9 +11,15 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { ChatState } from "../../context/ChatProvider";
 
 function Signup() {
+  const { setUser } = ChatState();
+
+  const navigate = useNavigate();
+
   const [show, setShow] = useState(false);
 
   const [formsubmitted, setFormSubmitted] = useState(false);
@@ -188,7 +194,7 @@ function Signup() {
         //     }
         // };
 
-        const response = await axios.post(
+        let response = await axios.post(
           "http://localhost:5000/auth/register",
           formData,
           { withCredentials: true }
@@ -201,6 +207,43 @@ function Signup() {
           duration: 5000,
           isClosable: true,
         });
+
+        let loginDetail = {loginId: formData.email, password: formData.password}
+
+        try {
+          response = await axios.post(
+            "http://localhost:5000/auth/login",
+            loginDetail,
+            { withCredentials: true }
+          );
+  
+          toast({
+            title: response.data.message,
+            description: response.data.data
+              ? `Logged in as ${response.data.data.email}`
+              : "",
+            status: response.data.status === 200 ? "success" : "error",
+            duration: 5000,
+            isClosable: true,
+          });
+  
+          if (response.data.data) {
+            localStorage.setItem("userInfo", JSON.stringify(response.data.data));
+            const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            setUser(userInfo);
+          }
+  
+          navigate("/chat");
+        } catch (error) {
+          toast({
+            title: "Error occured!",
+            description: error.message,
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+          setLoading(false);
+        }
 
         setFormData({
           ...formData,
@@ -217,7 +260,7 @@ function Signup() {
       } catch (error) {
         toast({
           title: "Error occured!",
-          description: error.response.data.message,
+          description: error.message,
           status: "error",
           duration: 5000,
           isClosable: true,

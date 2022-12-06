@@ -81,7 +81,9 @@ function Login() {
 
         toast({
           title: response.data.message,
-          description: `Logged in as ${response.data.data.email}`,
+          description: response.data.data
+            ? `Logged in as ${response.data.data.email}`
+            : "",
           status: response.data.status === 200 ? "success" : "error",
           duration: 5000,
           isClosable: true,
@@ -96,12 +98,14 @@ function Login() {
         setFormSubmitted(false);
         setLoading(false);
 
-        localStorage.setItem("userInfo", JSON.stringify(response.data.data));
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        setUser(userInfo);
+        if (response.data.data) {
+          localStorage.setItem("userInfo", JSON.stringify(response.data.data));
+          const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          setUser(userInfo);
+        }
+
         navigate("/chat");
       } catch (error) {
-        console.log(error);
         toast({
           title: "Error occured!",
           description: error.message,

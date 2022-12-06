@@ -56,8 +56,8 @@ function SideDrawer() {
       localStorage.removeItem("userInfo");
 
       toast({
-        title: response.message,
-        status: "success",
+        title: response.data.message,
+        status: response.data.status === 200 ? "success" : "error",
         duration: 5000,
         isClosable: true,
       });
